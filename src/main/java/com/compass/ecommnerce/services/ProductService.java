@@ -4,6 +4,7 @@ import com.compass.ecommnerce.dtos.ProductDTO;
 import com.compass.ecommnerce.entities.Product;
 import com.compass.ecommnerce.repositories.ProductRepository;
 import com.compass.ecommnerce.services.interfaces.IProductService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,8 +32,10 @@ public class ProductService implements IProductService {
 
         if(product.isPresent()){
             return new ProductDTO(product.get().getName(), product.get().getPrice(), product.get().getQuantity());
+        } else {
+            throw new EntityNotFoundException("Product of ID " + id + " not found");
         }
-        return null;
+
     }
 
     public List<ProductDTO> findAllProducts() {
