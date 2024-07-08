@@ -1,6 +1,7 @@
 package com.compass.ecommnerce.controllers;
 
-import com.compass.ecommnerce.dtos.ProductDTO;
+import com.compass.ecommnerce.dtos.RequestProductDTO;
+import com.compass.ecommnerce.dtos.ResponseProductDTO;
 import com.compass.ecommnerce.services.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +19,17 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> saveProduct(@RequestBody ProductDTO productDTO){
+    public ResponseEntity<ResponseProductDTO> saveProduct(@RequestBody RequestProductDTO productDTO){
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.saveProduct(productDTO));
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> findAllProducts(){
+    public ResponseEntity<List<ResponseProductDTO>> findAllProducts(){
         return ResponseEntity.ok(productService.findAllProducts());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> findProductById(@PathVariable Long id){
+    public ResponseEntity<ResponseProductDTO> findProductById(@PathVariable Long id){
         return  ResponseEntity.ok(productService.findProductById(id));
     }
 
