@@ -1,6 +1,9 @@
 package com.compass.ecommnerce.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,9 +16,15 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
+
+    @NotBlank
     private String name;
+    @Positive(message = "The quantity field must be positive")
+    @NotNull(message = "The quantity field must not be null")
     private Double price;
     private Double subTotal;
+    @Positive(message = "The quantity field must be positive")
+    @NotNull(message = "The quantity field must not be null")
     private Integer quantity;
     private boolean isActive;
     @ManyToMany(mappedBy = "products")
@@ -27,6 +36,7 @@ public class Product {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
+        this.isActive = true;
         this.setSubTotal();
     }
 

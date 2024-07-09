@@ -3,6 +3,7 @@ package com.compass.ecommnerce.controllers;
 import com.compass.ecommnerce.dtos.RequestProductDTO;
 import com.compass.ecommnerce.dtos.ResponseProductDTO;
 import com.compass.ecommnerce.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseProductDTO> saveProduct(@RequestBody RequestProductDTO productDTO){
+    public ResponseEntity<ResponseProductDTO> saveProduct(@RequestBody @Valid RequestProductDTO productDTO){
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.saveProduct(productDTO));
     }
 

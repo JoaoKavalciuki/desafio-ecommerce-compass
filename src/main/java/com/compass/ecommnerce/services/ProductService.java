@@ -4,8 +4,11 @@ import com.compass.ecommnerce.dtos.RequestProductDTO;
 import com.compass.ecommnerce.dtos.ResponseProductDTO;
 import com.compass.ecommnerce.entities.Product;
 import com.compass.ecommnerce.repositories.ProductRepository;
+import com.compass.ecommnerce.services.exceptions.InvalidRequestException;
+import com.compass.ecommnerce.services.exceptions.ProductAlredyOnSaleException;
 import com.compass.ecommnerce.services.interfaces.IProductService;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,10 +25,14 @@ public class ProductService implements IProductService {
     }
 
     public ResponseProductDTO saveProduct(RequestProductDTO productDTO){
-        Product product = new Product(productDTO.name(), productDTO.price(), productDTO.quantity());
-        productRepository.save(product);
+        try{
+            Product product = new Product(productDTO.name(), productDTO.price(), productDTO.quantity());
+            productRepository.save(product);
 
-        return new ResponseProductDTO(productDTO.name(), product.getPrice(), productDTO.quantity(), product.getSubTotal());
+            return new ResponseProductDTO(productDTO.name(), product.getPrice(), productDTO.quantity(), product.getSubTotal());
+        } catch (jakarta.validation.ConstraintViolationException exception){
+            throw new InvalidRequestException("The field value must be positive and not null or blank");
+        }
     }
 
 
@@ -68,8 +75,16 @@ public class ProductService implements IProductService {
         return products;
     }
 
-
     public void deleteProductById(Long id) {
-        productRepository.deleteById(id);
+        Optional<Product> product = productRepository.findById(id);
+
+        if(product.isPresent() && product.get().getSales().isEmpty()){
+            productRepository.deleteById(id);
+        } else if(product.isEmpty()){
+            throw new EntityNotFoundException("Product of ID " + id + " not found");
+        } else {
+            throw new  ProductAlredyOnSaleException("The product of id " +
+                    product.get().getId() + " is alredy on sale");
+        }
     }
 }
