@@ -12,9 +12,9 @@ public class Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Instant date;
 
+    private Double saleTotal = 0.00;
     @ManyToMany
     @JoinTable(name = "tb_sales_product",
             joinColumns = @JoinColumn(name = "sale_id"),
@@ -42,6 +42,16 @@ public class Sale {
 
     public void setDate(Instant date) {
         this.date = date;
+    }
+
+    public Double getSaleTotal() {
+        return saleTotal;
+    }
+
+    public void setSaleTotal(Integer productsQuantity) {
+        getProducts().forEach(product -> {this.saleTotal += productsQuantity * product.getPrice();}
+        );
+
     }
 
     public Set<Product> getProducts() {

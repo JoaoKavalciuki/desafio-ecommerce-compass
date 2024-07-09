@@ -33,29 +33,28 @@ public class SaleService implements ISaleService {
         List<Product> products = productService.findProductsByName(productsNames);
 
         products.forEach(product -> {
-            if(product.getQuantity() <= requestSaleDTO.quantity()){
-
-                sale.getProducts().add(product);
-                product.getSales().add(sale);
-            } else {
+            if(requestSaleDTO.quantity() > product.getQuantity()) {
                 throw new ProductOutOfStockException("O produto está fora de estoque");
             }
 
+            sale.getProducts().add(product);
+            product.getSales().add(sale);
+
             if (product.getQuantity() - requestSaleDTO.quantity() == 0) {
                 product.setActive(false);
-                product.setQuantity(product.getQuantity() - requestSaleDTO.quantity());
             }
 
             product.setQuantity(product.getQuantity() - requestSaleDTO.quantity());
             productRepository.save(product);
         });
-
+        sale.setSaleTotal(requestSaleDTO.quantity());
         saleRepository.save(sale);
 
         List<ResponseProductDTO> saleProducts = products.stream().map(product ->
-                new ResponseProductDTO(product.getName(), product.getPrice(), product.getQuantity(), product.getSubTotal())).toList();
+                new ResponseProductDTO(product.getName(), product.getPrice(), requestSaleDTO.quantity(),
+                        (product.getPrice() * requestSaleDTO.quantity()))).toList();
 
-        ResponseSaleDTO responseSaleDTO = new ResponseSaleDTO(sale.getDate(), saleProducts);
+        ResponseSaleDTO responseSaleDTO = new ResponseSaleDTO(sale.getDate(), saleProducts, sale.getSaleTotal());
         return  responseSaleDTO;
     }
 }
