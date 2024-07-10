@@ -4,6 +4,7 @@ import com.compass.ecommnerce.dtos.RequestProductDTO;
 import com.compass.ecommnerce.dtos.ResponseProductDTO;
 import com.compass.ecommnerce.entities.Product;
 import com.compass.ecommnerce.repositories.ProductRepository;
+import com.compass.ecommnerce.services.exceptions.DuplicatedRecordException;
 import com.compass.ecommnerce.services.exceptions.InvalidRequestException;
 import com.compass.ecommnerce.services.exceptions.ProductAlredyOnSaleException;
 import com.compass.ecommnerce.services.interfaces.IProductService;
@@ -32,6 +33,8 @@ public class ProductService implements IProductService {
             return new ResponseProductDTO(productDTO.name(), product.getPrice(), productDTO.quantity(), product.getSubTotal());
         } catch (jakarta.validation.ConstraintViolationException exception){
             throw new InvalidRequestException("The field value must be positive and not null or blank");
+        } catch (org.springframework.dao.DataIntegrityViolationException exception){
+            throw new DuplicatedRecordException("Product already saved");
         }
     }
 
