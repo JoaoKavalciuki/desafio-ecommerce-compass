@@ -1,5 +1,6 @@
 package com.compass.ecommnerce.controllers.exceptions;
 
+import com.compass.ecommnerce.services.exceptions.EmptySaleException;
 import com.compass.ecommnerce.services.exceptions.ProductOutOfStockException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,4 +29,14 @@ public class ErrorHandler {
         StandardError error = new StandardError(status.value(), "OK", errorMessage);
         return ResponseEntity.status(status).body(error);
     }
+
+    @ExceptionHandler(EmptySaleException.class)
+    public ResponseEntity<StandardError> emptySale(EmptySaleException exception){
+        String errorMessage = exception.getMessage();
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        StandardError error = new StandardError(status.value(), "Bad request", errorMessage);
+        return ResponseEntity.status(status).body(error);
+    }
+
 }

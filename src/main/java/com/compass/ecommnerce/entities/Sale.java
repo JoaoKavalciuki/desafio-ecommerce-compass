@@ -12,7 +12,8 @@ public class Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Instant date;
+    @Column(name = "sale_date")
+    private Instant saleDate;
 
     private Double saleTotal = 0.00;
     @ManyToMany
@@ -24,8 +25,8 @@ public class Sale {
     public Sale() {
     }
 
-    public Sale(Instant date) {
-        this.date = date;
+    public Sale(Instant saleDate) {
+        this.saleDate = saleDate;
     }
 
     public Long getId() {
@@ -36,12 +37,12 @@ public class Sale {
         this.id = id;
     }
 
-    public Instant getDate() {
-        return date;
+    public Instant getSaleDate() {
+        return saleDate;
     }
 
-    public void setDate(Instant date) {
-        this.date = date;
+    public void setDate(Instant SaleDate) {
+        this.saleDate = saleDate;
     }
 
     public Double getSaleTotal() {
