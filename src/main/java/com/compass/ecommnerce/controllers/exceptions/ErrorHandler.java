@@ -1,12 +1,9 @@
 package com.compass.ecommnerce.controllers.exceptions;
 
-import com.compass.ecommnerce.services.exceptions.DuplicatedRecordException;
-import com.compass.ecommnerce.services.exceptions.InvalidRequestException;
-import com.compass.ecommnerce.services.exceptions.ProductAlredyOnSaleException;
+import com.compass.ecommnerce.services.exceptions.EmptySaleException;
 import com.compass.ecommnerce.services.exceptions.ProductOutOfStockException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,14 +24,14 @@ public class ErrorHandler {
     @ExceptionHandler(ProductOutOfStockException.class)
     public ResponseEntity<StandardError> productOutOfStock(ProductOutOfStockException exception){
         String errorMessage = exception.getMessage();
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+        HttpStatus status = HttpStatus.OK;
 
-        StandardError error = new StandardError(status.value(), "Bad request", errorMessage);
+        StandardError error = new StandardError(status.value(), "OK", errorMessage);
         return ResponseEntity.status(status).body(error);
     }
 
-    @ExceptionHandler(InvalidRequestException.class)
-    public ResponseEntity<StandardError> notNullOrNegative(InvalidRequestException exception){
+    @ExceptionHandler(EmptySaleException.class)
+    public ResponseEntity<StandardError> emptySale(EmptySaleException exception){
         String errorMessage = exception.getMessage();
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -42,21 +39,4 @@ public class ErrorHandler {
         return ResponseEntity.status(status).body(error);
     }
 
-    @ExceptionHandler(ProductAlredyOnSaleException.class)
-    public ResponseEntity<StandardError> productOnSale(ProductAlredyOnSaleException exception){
-        String errorMessage = exception.getMessage();
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        StandardError error = new StandardError(status.value(), "Bad request", errorMessage);
-        return ResponseEntity.status(status).body(error);
-    }
-
-    @ExceptionHandler(DuplicatedRecordException.class)
-    public ResponseEntity<StandardError> duplicatedRecord(DuplicatedRecordException exception){
-        String errorMessage = exception.getMessage();
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        StandardError error = new StandardError(status.value(), "Bad request", errorMessage);
-        return ResponseEntity.status(status).body(error);
-    }
 }
