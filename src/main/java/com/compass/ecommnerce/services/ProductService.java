@@ -90,4 +90,17 @@ public class ProductService implements IProductService {
                     product.get().getId() + " is alredy on sale");
         }
     }
+
+    @Override
+    public List<ResponseProductDTO> productsListToDTO(List<Product> products) {
+        List<ResponseProductDTO> productsDTOList = new ArrayList<>();
+
+        products.forEach(product -> {
+            productsDTOList.add(new ResponseProductDTO(product.getName(), product.getPrice(), product.getQuantity(),
+                    product.getSubTotal()));
+        });
+        return productsDTOList;
+    }
+
+
 }
