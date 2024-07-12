@@ -19,5 +19,5 @@ public interface IProductService {
     List<Product> saveAll(List<Product> products);
     void deleteProductById(Long id);
 
-    List<ResponseProductDTO> productsListToDTO(List<Product> products);
+    List<ResponseProductDTO> productsListToDTO(List<Product> products, Integer soldQuantity);
 }

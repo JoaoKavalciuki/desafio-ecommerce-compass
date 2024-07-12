@@ -92,11 +92,11 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ResponseProductDTO> productsListToDTO(List<Product> products) {
+    public List<ResponseProductDTO> productsListToDTO(List<Product> products, Integer soldQuantity) {
         List<ResponseProductDTO> productsDTOList = new ArrayList<>();
 
         products.forEach(product -> {
-            productsDTOList.add(new ResponseProductDTO(product.getName(), product.getPrice(), product.getQuantity(),
+            productsDTOList.add(new ResponseProductDTO(product.getName(), product.getPrice(), soldQuantity,
                     product.getSubTotal()));
         });
         return productsDTOList;
