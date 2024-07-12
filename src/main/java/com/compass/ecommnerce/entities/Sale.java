@@ -16,6 +16,7 @@ public class Sale {
     private Instant saleDate;
 
     private Double saleTotal = 0.00;
+    private Integer quantitySold;
     @ManyToMany
     @JoinTable(name = "tb_sales_product",
             joinColumns = @JoinColumn(name = "sale_id"),
@@ -52,7 +53,14 @@ public class Sale {
     public void setSaleTotal(Integer productsQuantity) {
         getProducts().forEach(product -> {this.saleTotal += productsQuantity * product.getPrice();}
         );
+    }
 
+    public Integer getQuantitySold() {
+        return quantitySold;
+    }
+
+    public void setQuantitySold(Integer quantitySold) {
+        this.quantitySold = quantitySold;
     }
 
     public Set<Product> getProducts() {

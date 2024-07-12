@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,9 @@ public class SaleService implements ISaleService {
                 throw new ProductOutOfStockException("O produto está fora de estoque");
             }
 
+
             sale.getProducts().add(product);
+            sale.setQuantitySold(requestSaleDTO.quantity());
             product.getSales().add(sale);
 
             if (product.getQuantity() - requestSaleDTO.quantity() == 0) {
@@ -69,12 +72,23 @@ public class SaleService implements ISaleService {
     }
 
 
-    public TestDTO findSaleByDate(String formattedDate) {
+    public List<ResponseSaleDTO> findSaleByDate(String formattedDate) {
         List<Sale> sales = saleRepository.findBySaleDate(formattedDate);
 
+        List<ResponseSaleDTO> responseSalesDTO = new ArrayList<>();
         if(!sales.isEmpty()){
-            List<ResponseSaleDTO> salesDTO;
-            return null;
+            sales.forEach(sale ->{
+                //Retornar a quantidade vendida, o subtotal tbm ta errado
+                List<ResponseProductDTO> salesProducts = productService.
+                        productsListToDTO(sale.getProducts().stream().toList(), sale.getQuantitySold());
+
+                ResponseSaleDTO responseSaleDTO = new ResponseSaleDTO(sale.getSaleDate(), salesProducts,
+                        sale.getSaleTotal());
+
+                responseSalesDTO.add(responseSaleDTO);
+            });
+
+            return responseSalesDTO;
         }
         throw new EntityNotFoundException("Sale of date " + formattedDate + " not found");
 
