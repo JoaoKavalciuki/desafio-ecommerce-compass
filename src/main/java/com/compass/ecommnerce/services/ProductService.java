@@ -97,7 +97,7 @@ public class ProductService implements IProductService {
 
         products.forEach(product -> {
             productsDTOList.add(new ResponseProductDTO(product.getName(), product.getPrice(), soldQuantity,
-                    product.getSubTotal()));
+                    (product.getPrice() * soldQuantity)));
         });
         return productsDTOList;
     }
