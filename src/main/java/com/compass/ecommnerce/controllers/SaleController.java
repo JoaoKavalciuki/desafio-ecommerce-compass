@@ -1,5 +1,6 @@
 package com.compass.ecommnerce.controllers;
 
+import com.compass.ecommnerce.dtos.RelatoryDTO;
 import com.compass.ecommnerce.dtos.ResponseSaleDTO;
 import com.compass.ecommnerce.dtos.SaleDTO;
 import com.compass.ecommnerce.dtos.TestDTO;
@@ -26,6 +27,13 @@ public class SaleController {
     @GetMapping()
     public ResponseEntity<List<ResponseSaleDTO>> getSaleByDate(@RequestParam(name = "date") String date){
         return ResponseEntity.ok(saleService.findSaleByDate(date));
+    }
+
+    @GetMapping("/relatory")
+    public ResponseEntity<RelatoryDTO> getSalesBetweenDates(@RequestParam(name = "initDate") String date,
+                                                                  @RequestParam(name = "endDate") String endDate)
+    {
+        return ResponseEntity.ok(saleService.findSalesBetweenDates(date, endDate));
     }
 
 }

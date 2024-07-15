@@ -1,9 +1,6 @@
 package com.compass.ecommnerce.services;
 
-import com.compass.ecommnerce.dtos.ResponseProductDTO;
-import com.compass.ecommnerce.dtos.ResponseSaleDTO;
-import com.compass.ecommnerce.dtos.SaleDTO;
-import com.compass.ecommnerce.dtos.TestDTO;
+import com.compass.ecommnerce.dtos.*;
 import com.compass.ecommnerce.entities.Product;
 import com.compass.ecommnerce.entities.Sale;
 import com.compass.ecommnerce.projections.SaleProjection;
@@ -71,6 +68,41 @@ public class SaleService implements ISaleService {
         return  responseSaleDTO;
     }
 
+    @Override
+    public RelatoryDTO findSalesBetweenDates(String initDate, String endDate) {
+        List<Sale> sales = saleRepository.findBetweenDates(initDate, endDate);
+
+        List<ResponseSaleDTO> responseSalesDTO = new ArrayList<>();
+        if(!sales.isEmpty()){
+            sales.forEach(sale ->{
+                List<ResponseProductDTO> salesProducts = productService.
+                        productsListToDTO(sale.getProducts().stream().toList(), sale.getQuantitySold());
+
+
+                ResponseSaleDTO responseSaleDTO = new ResponseSaleDTO(sale.getSaleDate(), salesProducts,
+                        sale.getSaleTotal());
+
+                responseSalesDTO.add(responseSaleDTO);
+            });
+
+            Integer relatoryQuantitySold = 0;
+            for(Sale sale: sales){
+                relatoryQuantitySold += sale.getQuantitySold();
+            }
+
+            Double relatoryTotalSold = 0.00;
+            for(ResponseSaleDTO sale: responseSalesDTO){
+                relatoryTotalSold += sale.saleTotal();
+
+            }
+
+            RelatoryDTO relatoryDTO = new RelatoryDTO(Instant.now(),  relatoryTotalSold, relatoryQuantitySold, responseSalesDTO);
+            return relatoryDTO;
+        }
+        throw new EntityNotFoundException("Sales between dates " + initDate + " and " + endDate +" not found");
+
+    }
+
 
     public List<ResponseSaleDTO> findSaleByDate(String formattedDate) {
         List<Sale> sales = saleRepository.findBySaleDate(formattedDate);
@@ -78,7 +110,6 @@ public class SaleService implements ISaleService {
         List<ResponseSaleDTO> responseSalesDTO = new ArrayList<>();
         if(!sales.isEmpty()){
             sales.forEach(sale ->{
-                //Retornar a quantidade vendida, o subtotal tbm ta errado
                 List<ResponseProductDTO> salesProducts = productService.
                         productsListToDTO(sale.getProducts().stream().toList(), sale.getQuantitySold());
 
