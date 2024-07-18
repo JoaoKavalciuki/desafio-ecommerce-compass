@@ -1,5 +1,6 @@
 package com.compass.ecommnerce.controllers.exceptions;
 
+import com.compass.ecommnerce.events.exceptions.MailException;
 import com.compass.ecommnerce.services.exceptions.DuplicatedRecordException;
 import com.compass.ecommnerce.services.exceptions.InvalidRequestException;
 import com.compass.ecommnerce.services.exceptions.ProductAlredyOnSaleException;
@@ -52,6 +53,14 @@ public class ErrorHandler {
 
     @ExceptionHandler(DuplicatedRecordException.class)
     public ResponseEntity<StandardError> duplicatedRecord(DuplicatedRecordException exception){
+        String errorMessage = exception.getMessage();
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        StandardError error = new StandardError(status.value(), "Bad request", errorMessage);
+        return ResponseEntity.status(status).body(error);
+    }
+    @ExceptionHandler(MailException.class)
+    public ResponseEntity<StandardError> mailException(MailException exception){
         String errorMessage = exception.getMessage();
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
