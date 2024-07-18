@@ -102,5 +102,25 @@ public class ProductService implements IProductService {
         return productsDTOList;
     }
 
+    @Override
+    public ResponseProductDTO updateProduct(Long id, RequestProductDTO product) {
+        try{
+            Product target = productRepository.getReferenceById(id);
+            updateData(product, target);
+            productRepository.save(target);
+            return new ResponseProductDTO(target.getName(), target.getPrice(), target.getQuantity(),
+                    target.getSubTotal());
+        } catch (EntityNotFoundException exception){
+            throw new EntityNotFoundException("Product of id: " + id + "not found");
+        }
+    }
+
+    @Override
+    public void updateData(RequestProductDTO source, Product target) {
+        target.setName(source.name());
+        target.setQuantity(source.quantity());
+        target.setPrice(source.price());
+    }
+
 
 }

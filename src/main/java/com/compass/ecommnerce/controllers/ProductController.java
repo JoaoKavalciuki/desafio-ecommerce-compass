@@ -2,6 +2,7 @@ package com.compass.ecommnerce.controllers;
 
 import com.compass.ecommnerce.dtos.RequestProductDTO;
 import com.compass.ecommnerce.dtos.ResponseProductDTO;
+import com.compass.ecommnerce.entities.Sale;
 import com.compass.ecommnerce.services.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,11 @@ public class ProductController {
         productService.deleteProductById(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseProductDTO> updateSale(@PathVariable Long id, @RequestBody @Valid RequestProductDTO productDTO){
+        return ResponseEntity.ok(productService.updateProduct(id, productDTO));
     }
 
 }

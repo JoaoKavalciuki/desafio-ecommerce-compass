@@ -20,4 +20,8 @@ public interface IProductService {
     void deleteProductById(Long id);
 
     List<ResponseProductDTO> productsListToDTO(List<Product> products, Integer soldQuantity);
+
+    ResponseProductDTO updateProduct(Long id, RequestProductDTO product);
+
+    void updateData(RequestProductDTO source, Product target);
 }
