@@ -50,7 +50,7 @@ public class SaleService implements ISaleService {
 
         products.forEach(product -> {
             if(requestSaleDTO.quantity() > product.getQuantity()) {
-                throw new ProductOutOfStockException("O produto está fora de estoque");
+                throw new ProductOutOfStockException("The product is out of stock or the quantity on stock isn't enough ");
             }
 
 
