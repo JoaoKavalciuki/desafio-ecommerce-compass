@@ -21,9 +21,9 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    /*public JwtSecurityFilter createJwtFilter(){
+    public JwtSecurityFilter createJwtFilter(){
         return new JwtSecurityFilter();
-    }*/
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -50,12 +50,15 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                                .requestMatchers("/login/**").permitAll()
+                                .requestMatchers((HttpMethod.POST), "/register").permitAll()
+                                .requestMatchers((HttpMethod.POST), "/forgot-password").permitAll()
                                 .requestMatchers((HttpMethod.POST), "/products").hasRole("ADMIN")
                                 .requestMatchers((HttpMethod.PUT), "/products").hasRole("ADMIN")
                                 .requestMatchers((HttpMethod.DELETE) ,"products/**").hasRole("ADMIN")
                                 .requestMatchers((HttpMethod.DELETE) ,"sales/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
-                        )//addFilterBefore(createJwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                        ).addFilterBefore(createJwtFilter(), UsernamePasswordAuthenticationFilter.class)
          .build();
     }
 }

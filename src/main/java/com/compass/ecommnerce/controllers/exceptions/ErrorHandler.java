@@ -1,11 +1,7 @@
 package com.compass.ecommnerce.controllers.exceptions;
 
 import com.compass.ecommnerce.events.exceptions.MailException;
-import com.compass.ecommnerce.services.exceptions.DuplicatedRecordException;
-import com.compass.ecommnerce.services.exceptions.InvalidRequestException;
-import com.compass.ecommnerce.services.exceptions.ProductAlredyOnSaleException;
-import com.compass.ecommnerce.services.exceptions.EmptySaleException;
-import com.compass.ecommnerce.services.exceptions.ProductOutOfStockException;
+import com.compass.ecommnerce.services.exceptions.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,5 +72,12 @@ public class ErrorHandler {
         StandardError error = new StandardError(status.value(), "Bad request", errorMessage);
         return ResponseEntity.status(status).body(error);
     }
+    @ExceptionHandler(JWTException.class)
+    public ResponseEntity<StandardError> jwtError(EmptySaleException exception){
+        String errorMessage = exception.getMessage();
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
+        StandardError error = new StandardError(status.value(), "Internal Server error", errorMessage);
+        return ResponseEntity.status(status).body(error);
+    }
 }
