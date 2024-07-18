@@ -35,6 +35,24 @@ public class SaleService implements ISaleService {
         this.productRepository = productRepository;
     }
 
+    @Override
+    public List<ResponseSaleDTO> findAll() {
+         var sales = saleRepository.findAll();
+         List<ResponseSaleDTO> responseSalesDTO = new ArrayList<>();
+
+         sales.forEach(sale -> {
+             List<ResponseProductDTO> salesProducts = productService.
+                     productsListToDTO(sale.getProducts().stream().toList(), sale.getQuantitySold());
+
+             ResponseSaleDTO responseSaleDTO = new ResponseSaleDTO(sale.getSaleDate(), salesProducts,
+                     sale.getSaleTotal());
+
+             responseSalesDTO.add(responseSaleDTO);
+
+         });
+         return responseSalesDTO;
+    }
+
     public ResponseSaleDTO saveSale(String[] productsNames, SaleDTO requestSaleDTO) {
         if(productsNames.length == 0){
             throw new EmptySaleException("A sale without products cannot be processed");
@@ -71,6 +89,26 @@ public class SaleService implements ISaleService {
         return  responseSaleDTO;
     }
 
+    @Override
+    public Sale updateSale(Long id, String[] newProducts) {
+        try{
+            Sale saleToBeUpdated = saleRepository.getReferenceById(id);
+            List<Product> products = productService.findProductsByName(newProducts);
+            updateData(saleToBeUpdated, products);
+            return saleRepository.save(saleToBeUpdated);
+        } catch (EntityNotFoundException exception){
+            throw new EntityNotFoundException("Sale of id: " + id + " not found");
+        }
+    }
+
+    @Override
+    public void updateData(Sale sale, List<Product> products) {
+        sale.getProducts().addAll(products);
+        products.forEach(product -> {
+            product.getSales().add(sale);
+        });
+
+    }
 
     public List<ResponseSaleDTO> findSaleByDate(String formattedDate) {
         List<Sale> sales = saleRepository.findBySaleDate(formattedDate);
@@ -78,7 +116,7 @@ public class SaleService implements ISaleService {
         List<ResponseSaleDTO> responseSalesDTO = new ArrayList<>();
         if(!sales.isEmpty()){
             sales.forEach(sale ->{
-                //Retornar a quantidade vendida, o subtotal tbm ta errado
+
                 List<ResponseProductDTO> salesProducts = productService.
                         productsListToDTO(sale.getProducts().stream().toList(), sale.getQuantitySold());
 
@@ -91,6 +129,7 @@ public class SaleService implements ISaleService {
             return responseSalesDTO;
         }
         throw new EntityNotFoundException("Sale of date " + formattedDate + " not found");
-
     }
+
+
 }
