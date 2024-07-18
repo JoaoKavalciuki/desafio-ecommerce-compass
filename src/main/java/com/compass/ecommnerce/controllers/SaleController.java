@@ -36,4 +36,9 @@ public class SaleController {
         return ResponseEntity.ok(saleService.findSalesBetweenDates(date, endDate));
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteSaleById(@PathVariable Long id){
+        /*TODO*/
+    }
+
 }
