@@ -87,7 +87,7 @@ public class ProductService implements IProductService {
             throw new EntityNotFoundException("Product of ID " + id + " not found");
         } else {
             throw new  ProductAlredyOnSaleException("The product of id " +
-                    product.get().getId() + " is alredy on sale");
+                    product.get().getId() + " is already on sale");
         }
     }
 

@@ -13,4 +13,6 @@ public interface ISaleService {
     ResponseSaleDTO saveSale(String[] productsNames, SaleDTO requestSaleDTO);
 
     RelatoryDTO findSalesBetweenDates(String initDate, String endDate);
+
+    void deleteSaleById(Long id);
 }

@@ -37,8 +37,9 @@ public class SaleController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteSaleById(@PathVariable Long id){
-        /*TODO*/
+    public ResponseEntity<Void> deleteSaleById(@PathVariable Long id){
+        saleService.deleteSaleById(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

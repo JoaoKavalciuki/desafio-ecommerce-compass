@@ -115,6 +115,11 @@ public class SaleService implements ISaleService {
 
     }
 
+    @Override
+    public void deleteSaleById(Long id) {
+        saleRepository.deleteById(id);
+    }
+
 
     public List<ResponseSaleDTO> findSaleByDate(String formattedDate) {
         List<Sale> sales = saleRepository.findBySaleDate(formattedDate);
