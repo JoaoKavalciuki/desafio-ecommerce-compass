@@ -29,7 +29,7 @@ public class SaleController {
         return ResponseEntity.ok(saleService.findSaleByDate(date));
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<ResponseSaleDTO>> findAll(){
         return ResponseEntity.ok(saleService.findAll());
     }

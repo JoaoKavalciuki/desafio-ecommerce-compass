@@ -56,7 +56,7 @@ public class PasswordRecoveryEventListener implements ApplicationListener<Passwo
                                      User user) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = mailSender.createMimeMessage();
         var messageHelper = new MimeMessageHelper(message);
-        messageHelper.setFrom("dev.email.test.java@gmail.com", senderName);
+        messageHelper.setFrom("book.shifter.brazil@gmail.com", senderName);
         messageHelper.setTo(user.getEmail());
         messageHelper.setSubject(subject);
         messageHelper.setText(mailContent, true);

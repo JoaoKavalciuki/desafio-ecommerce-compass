@@ -10,15 +10,13 @@ import com.compass.ecommnerce.services.exceptions.JWTException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 
 @Service
 public class JWTService {
     @Value("${api.security.token.secret}")
     public String secret;
+
     public TokenDTO generateToken(User user){
         try{
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -27,6 +25,8 @@ public class JWTService {
                     .withSubject(user.getEmail())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
+                System.out.println(generateExpirationDate());
+            System.out.println(Instant.now().atZone(ZoneId.of("+00:00")));
                 return new TokenDTO(Instant.now().atZone(ZoneId.of("+00:00")).toInstant(), token, generateExpirationDate());
         } catch(JWTCreationException exception){
             throw new JWTException("Error while generating jwt token,"+ exception);
@@ -48,6 +48,6 @@ public class JWTService {
     }
 
     private Instant generateExpirationDate() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("+00:00"));
+        return Instant.now().plus(Duration.ofHours(2));
     }
 }
