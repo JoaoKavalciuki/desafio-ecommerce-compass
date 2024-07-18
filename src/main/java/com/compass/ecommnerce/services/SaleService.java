@@ -3,6 +3,7 @@ package com.compass.ecommnerce.services;
 import com.compass.ecommnerce.dtos.*;
 import com.compass.ecommnerce.entities.Product;
 import com.compass.ecommnerce.entities.Sale;
+import com.compass.ecommnerce.entities.User;
 import com.compass.ecommnerce.projections.SaleProjection;
 import com.compass.ecommnerce.repositories.ProductRepository;
 import com.compass.ecommnerce.repositories.SaleRepository;
@@ -10,7 +11,10 @@ import com.compass.ecommnerce.services.exceptions.EmptySaleException;
 import com.compass.ecommnerce.services.exceptions.ProductOutOfStockException;
 import com.compass.ecommnerce.services.interfaces.IProductService;
 import com.compass.ecommnerce.services.interfaces.ISaleService;
+import com.compass.ecommnerce.services.interfaces.IUserService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -23,13 +27,17 @@ import java.util.Optional;
 public class SaleService implements ISaleService {
     private SaleRepository saleRepository;
     private IProductService productService;
+    private IUserService userService;
+    private Authentication authentication;
     ProductRepository productRepository;
 
-
-    public SaleService(SaleRepository saleRepository, IProductService productService, ProductRepository productRepository) {
+    public SaleService(SaleRepository saleRepository, IProductService productService, ProductRepository productRepository,
+                       IUserService userService)
+    {
         this.saleRepository = saleRepository;
         this.productService = productService;
         this.productRepository = productRepository;
+        this.userService = userService;
     }
 
     public ResponseSaleDTO saveSale(String[] productsNames, SaleDTO requestSaleDTO) {
@@ -58,6 +66,10 @@ public class SaleService implements ISaleService {
             productRepository.save(product);
         });
         sale.setSaleTotal(requestSaleDTO.quantity());
+
+        User buyer = userService.getAuthenticatedUserInfo(authentication);
+        buyer.getSales().add(sale);
+        sale.setBuyer(buyer);
         saleRepository.save(sale);
 
         List<ResponseProductDTO> saleProducts = products.stream().map(product ->

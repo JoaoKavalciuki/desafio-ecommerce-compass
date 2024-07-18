@@ -23,6 +23,10 @@ public class Sale {
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private Set<Product> products = new HashSet<>();
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "buyer_id")
+    private User buyer;
+
     public Sale() {
     }
 
@@ -69,5 +73,13 @@ public class Sale {
 
     public void setProducts(Set<Product> products) {
         this.products = products;
+    }
+
+    public User getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(User buyer) {
+        this.buyer = buyer;
     }
 }
